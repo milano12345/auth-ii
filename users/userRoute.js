@@ -9,7 +9,7 @@ const knexConfig = require("../knexfile.js");
 const jwt = require("jsonwebtoken");
 
 const db = require('../data/dbConfig.js');
-const Users = require('../users/users-module.js');
+const Users = require('../users/users-model.js');
 
 const secret = process.env.JWT_SECRET 
 
@@ -45,13 +45,12 @@ router.post('/register', (req, res) => {
         });
 });
 
-router.post('/api/login', (req, res) => {
+router.post('/login', (req, res) => {
     let { username, password, department } = req.body;
   
     Users.findBy({ username })
       .first()
       .then(user => {
-        // check that passwords match
         if (user && bcrypt.compareSync(password, user.password)) {
             const token = generateToken(user);
           res
