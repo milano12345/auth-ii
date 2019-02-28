@@ -47,42 +47,48 @@ class Login extends React.Component {
       };
     }
   
-    handleChanges = e => {
-      e.preventDefault();
-      const { name, value } = e.target;
-      this.setState({
-        [name]: value
-      });
-    };
-  
-    handleSubmit = e => {
-      e.preventDefault();
-      const endpoint =
-        'http://localhost:5000/login';
-      axios
-        .post(endpoint, {
-          username: this.state.username,
-          password: this.state.password
-        })
-        .then(res => {
-          console.log(res.data);
-          localStorage.setItem("jwt", res.data.token);
-          this.props.history.push("/users");
-        })
-        .catch(err => {
-          this.setState({ errorMessage: err.response.data.message });
-        });
-    };
+    handleInputChange = event => {
+        const { name, value } = event.target;
+    
+        this.setState({ [name]: value });
+      };
+    
+      handleSubmit = event => {
+        event.preventDefault();
+    
+        const endpoint = 'http://localhost:5000/login';
+    
+        axios
+          .post(endpoint, this.state)
+          .then(res => {
+            localStorage.setItem('jwt', res.data.token);
+    
+            this.props.history.push('/users');
+          })
+          .catch(error => console.error(error));
+      };
   
     render() {
         return(
             <FormContainer>
                 <h1>Login</h1>
-                <Signin onChange={this.handleLoginChange} onSubmit={this.handleLogin}>
+                <Signin onSubmit={this.handleSubmit}>
                     <h2>Username:</h2>
-                    <input type="text" name="username" required/>
+                    <input
+                        name="username"
+                        id="username"
+                        value={this.state.username}
+                        onChange={this.handleInputChange}
+                        type="text"
+                    />
                     <h2>Password:</h2>
-                    <input type="password" name="password" required/>
+                    <input
+                        name="password"
+                        id="password"
+                        value={this.state.password}
+                        onChange={this.handleInputChange}
+                        type="password"
+                    />
                     <button type="submit">Login</button>
                     <Link to='/register' style={{color: 'white'}}>No account? Click here to Register</Link>
                 </Signin>

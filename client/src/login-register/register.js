@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import styled from 'styled-components';
 
@@ -40,50 +41,65 @@ class Register extends React.Component {
     constructor(props) {
       super(props);
       this.state = {
-        username: "",
-        password: "",
-        errorMessage: null
+        username: '',
+        department: '',
+        password: ''
       };
     }
   
-    handleChanges = e => {
-      e.preventDefault();
-      const { name, value } = e.target;
-      this.setState({
-        [name]: value
-      });
-    };
-  
-    handleSubmit = e => {
-      e.preventDefault();
-      const endpoint =
-        'http://localhost:5000/register';
-      axios
-        .post(endpoint, {
-          username: this.state.username,
-          password: this.state.password
-        })
-        .then(res => {
-          console.log(res.data);
-          localStorage.setItem("jwt", res.data.token);
-          this.props.history.push("/users");
-        })
-        .catch(err => {
-          this.setState({ errorMessage: err.response.data.message });
-        });
-    };
+    handleInputChange = event => {
+        const { name, value } = event.target;
+    
+        this.setState({ [name]: value });
+      };
+    
+      handleSubmit = event => {
+        event.preventDefault();
+    
+        const endpoint = 'http://localhost:5000/register';
+    
+        axios
+          .post(endpoint, this.state)
+          .then(res => {
+            localStorage.setItem('jwt', res.data.token);
+            this.props.history.push('/login');
+          })
+          .catch(error => console.error(error));
+      };
+
   
     render() {
         return(
             <FormContainer>
                 <h1>Register</h1>
-                <Signup onChange={this.handleRegisterChange} onSubmit={this.handleRegister}>
-                <h2>Username:</h2>
-                <input type="text" name="username" required/>
-                <h2>Password:</h2>
-                <input type="password" name="password" required/>
-                <button type="submit">Register</button>
-            </Signup>
+                <Signup onSubmit={this.handleSubmit}>
+                    <h2>Username:</h2>
+                    <input
+                        name="username"
+                        id="username"
+                        value={this.state.username}
+                        onChange={this.handleInputChange}
+                        type="text"
+                    />
+                    <h2>Department:</h2>
+                    <input
+                        name="department"
+                        id="department"
+                        value={this.state.department}
+                        onChange={this.handleInputChange}
+                        type="text"
+                    />
+                    <h2>Password:</h2>
+                    <input
+                        name="password"
+                        id="password"
+                        value={this.state.password}
+                        onChange={this.handleInputChange}
+                        type="password"
+                    />
+                    <button type="submit">Register</button>
+                    <Link to='/login' style={{color: 'white'}}>Already have an account? Click here to login</Link>
+                </Signup>
             </FormContainer>
         )
     }

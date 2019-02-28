@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Route, NavLink, withRouter } from 'react-router-dom';
 import Login from './login-register/login';
 import Register from './login-register/register';
+import Users from './users/users';
 
 import './App.css';
 
@@ -24,11 +25,17 @@ class App extends Component {
         <main>
           <Route path="/login" component={Login} />
           <Route path="/register" component={Register} />
-          <Route path="/users" component={''} />
+          <Route path="/users" component={Users} />
         </main>
       </>
     );
   }
+  logout = () => {
+    localStorage.removeItem('jwt');
+
+    this.props.history.push('/login');
+  };
+
 }
 
-export default App;
+export default withRouter(App);
